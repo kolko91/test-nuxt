@@ -1,20 +1,9 @@
-const isVueRule = (rule) => {
-  return rule.test.toString() === '/\\.vue$/'
-}
-const isSASSRule = (rule) => {
-  return ['/\\.scss$/'].indexOf(rule.test.toString()) !== -1
-}
-const sassResourcesLoader = {
-  loader: 'sass-loader',
-  options: {
-    includePaths: [__dirname],
-    data: '@import "assets/css/base.scss";'
-  }
-}
-
+const resolve = require('path').resolve;
 
 module.exports = {
-  css: ['~/sass/main.scss'],
+  css: [
+    {src:'@/sass/main.scss', lang: 'scss'}
+  ],
   /*
   ** Headers of the page
   */
@@ -49,18 +38,9 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    },
-    extend (config) {
-      config.module.rules.forEach((rule) => {
-        if (isVueRule(rule)) {
-          rule.options.loaders.scss.pop()
-          rule.options.loaders.scss.push(sassResourcesLoader)
-        }
-        if (isSASSRule(rule)) {
-          rule.use.pop()
-          rule.use.push(sassResourcesLoader)
-        }
-      })
     }
-  }
+  },
+  modules: [
+    ['nuxt-sass-resources-loader', resolve(__dirname, 'sass/variables.scss')],
+  ]
 }
